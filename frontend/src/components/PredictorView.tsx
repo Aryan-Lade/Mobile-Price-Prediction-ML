@@ -12,7 +12,8 @@ import {
   Sparkles,
   Loader2,
   RotateCcw,
-  FlaskConical
+  FlaskConical,
+  Star
 } from 'lucide-react';
 
 interface PredictorViewProps {
@@ -24,7 +25,6 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
   const [selectedSoC, setSelectedSoC] = useState<string>('snapdragon_8gen2');
   const [cpuTopology, setCpuTopology] = useState<string>('8_octa_143');
   const [resolutionStandard, setResolutionStandard] = useState<string>('1080 x 2400');
-  const [lensConfig, setLensConfig] = useState<string>('3_rear_1_front');
   const [selectedModel, setSelectedModel] = useState<string>('champion');
   
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,19 +60,15 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
       if (presetKey === 'flagship') {
         setSelectedSoC('snapdragon_8gen2');
         setResolutionStandard('1440 x 3088');
-        setLensConfig('4_rear_1_front');
       } else if (presetKey === 'premium') {
         setSelectedSoC('snapdragon_8gen2');
         setResolutionStandard('1080 x 2400');
-        setLensConfig('3_rear_1_front');
       } else if (presetKey === 'midrange') {
         setSelectedSoC('dimensity_9200');
         setResolutionStandard('1080 x 2400');
-        setLensConfig('3_rear_1_front');
       } else {
         setSelectedSoC('helio_g99');
         setResolutionStandard('720 x 1600');
-        setLensConfig('2_rear_1_front');
       }
     }
   };
@@ -220,6 +216,25 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Operating System (OS) <span className="text-[11px] font-normal text-slate-400">(Platform)</span>
+                </label>
+                <select
+                  value={specs.os || 'android'}
+                  onChange={(e) => {
+                    const newOs = e.target.value;
+                    const newBrand = newOs === 'ios' ? 'apple' : (specs.brand_name === 'apple' ? 'samsung' : specs.brand_name);
+                    setSpecs({ ...specs, os: newOs, brand_name: newBrand });
+                  }}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                >
+                  <option value="android">Android (Google / AOSP)</option>
+                  <option value="ios">Apple iOS</option>
+                  <option value="other">Other / HarmonyOS</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   System-on-Chip (SoC) <span className="text-[11px] font-normal text-slate-400">(Fabrication node)</span>
                 </label>
                 <select
@@ -227,13 +242,13 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
                   onChange={(e) => {
                     setSelectedSoC(e.target.value);
                     if (e.target.value.includes('snapdragon_8')) {
-                      setSpecs({ ...specs, processor_brand: 'snapdragon', processor_speed: 3.2 });
+                      setSpecs({ ...specs, processor_brand: 'snapdragon', processor_speed: 3.2, os: 'android' });
                     } else if (e.target.value.includes('dimensity')) {
-                      setSpecs({ ...specs, processor_brand: 'dimensity', processor_speed: 2.8 });
+                      setSpecs({ ...specs, processor_brand: 'dimensity', processor_speed: 2.8, os: 'android' });
                     } else if (e.target.value.includes('bionic')) {
-                      setSpecs({ ...specs, processor_brand: 'bionic', processor_speed: 3.46, os: 'ios' });
+                      setSpecs({ ...specs, processor_brand: 'bionic', processor_speed: 3.46, os: 'ios', brand_name: 'apple' });
                     } else {
-                      setSpecs({ ...specs, processor_brand: 'helio', processor_speed: 2.0 });
+                      setSpecs({ ...specs, processor_brand: 'helio', processor_speed: 2.0, os: 'android' });
                     }
                   }}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
@@ -283,6 +298,60 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
                   <option value="4_quad">4 Cores (Quad-core)</option>
                 </select>
               </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Smartphone Brand <span className="text-[11px] font-normal text-slate-400">(OEM)</span>
+                </label>
+                <select
+                  value={specs.brand_name || 'samsung'}
+                  onChange={(e) => {
+                    const b = e.target.value;
+                    const newOs = b === 'apple' ? 'ios' : (specs.os === 'ios' ? 'android' : specs.os);
+                    setSpecs({ ...specs, brand_name: b, os: newOs });
+                  }}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                >
+                  <option value="samsung">Samsung</option>
+                  <option value="apple">Apple</option>
+                  <option value="oneplus">OnePlus</option>
+                  <option value="xiaomi">Xiaomi</option>
+                  <option value="realme">Realme</option>
+                  <option value="vivo">Vivo</option>
+                  <option value="oppo">Oppo</option>
+                  <option value="motorola">Motorola</option>
+                  <option value="google">Google</option>
+                  <option value="other_brand">Other Brand</option>
+                </select>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span className="flex items-center space-x-1">
+                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+                    <span>Benchmark / Review Rating</span>
+                  </span>
+                  <span className="text-xs font-mono font-bold text-amber-800">{specs.rating || 80}/100</span>
+                </label>
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="range"
+                    min="40"
+                    max="100"
+                    value={specs.rating || 80}
+                    onChange={(e) => setSpecs({ ...specs, rating: Number(e.target.value) })}
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-700"
+                  />
+                  <input
+                    type="number"
+                    min="40"
+                    max="100"
+                    value={specs.rating || 80}
+                    onChange={(e) => setSpecs({ ...specs, rating: Number(e.target.value) })}
+                    className="w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-md text-xs font-bold text-center text-slate-900"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -319,18 +388,43 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
                   Expandable Storage Slot
                 </label>
                 <div className="flex items-center justify-between px-3.5 py-2 bg-[#FAF8F5] border border-[#DDD6CD] rounded-lg shadow-2xs">
-                  <span className="text-xs font-medium text-slate-700">MicroSD up to 1TB</span>
+                  <span className="text-xs font-medium text-slate-700">MicroSD Support</span>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={specs.extended_memory_available === 1}
-                      onChange={(e) => setSpecs({ ...specs, extended_memory_available: e.target.checked ? 1 : 0 })}
+                      onChange={(e) => {
+                        const enabled = e.target.checked ? 1 : 0;
+                        setSpecs({
+                          ...specs,
+                          extended_memory_available: enabled,
+                          extended_upto: enabled ? (specs.extended_upto || 1024) : 0
+                        });
+                      }}
                       className="sr-only peer"
                     />
                     <div className="w-9 h-5 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-700"></div>
                   </label>
                 </div>
               </div>
+
+              {specs.extended_memory_available === 1 && (
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Expandable Capacity Limit <span className="text-[11px] font-normal text-slate-400">(MicroSD extended_upto)</span>
+                  </label>
+                  <select
+                    value={specs.extended_upto || 1024}
+                    onChange={(e) => setSpecs({ ...specs, extended_upto: Number(e.target.value) })}
+                    className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#DDD6CD] rounded-lg text-xs font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-600/15 focus:border-amber-700/40 shadow-2xs"
+                  >
+                    <option value="256">Expandable up to 256 GB</option>
+                    <option value="512">Expandable up to 512 GB</option>
+                    <option value="1024">Expandable up to 1024 GB (1 TB)</option>
+                    <option value="2048">Expandable up to 2048 GB (2 TB)</option>
+                  </select>
+                </div>
+              )}
             </div>
           </div>
 
@@ -470,7 +564,8 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
               <span className="px-2 py-0.5 bg-amber-50 text-amber-800 font-semibold text-[10px] rounded-md uppercase border border-amber-200">Sensor & RF</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">Rear Main Optical</label>
                 <div className="relative">
@@ -502,36 +597,43 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Lens Configuration</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Rear Lens Count</label>
                 <select
-                  value={lensConfig}
-                  onChange={(e) => {
-                    setLensConfig(e.target.value);
-                    if (e.target.value === '4_rear_1_front') setSpecs({ ...specs, num_rear_cameras: 4, num_front_cameras: 1 });
-                    else if (e.target.value === '3_rear_1_front') setSpecs({ ...specs, num_rear_cameras: 3, num_front_cameras: 1 });
-                    else if (e.target.value === '2_rear_1_front') setSpecs({ ...specs, num_rear_cameras: 2, num_front_cameras: 1 });
-                    else setSpecs({ ...specs, num_rear_cameras: 1, num_front_cameras: 1 });
-                  }}
+                  value={specs.num_rear_cameras}
+                  onChange={(e) => setSpecs({ ...specs, num_rear_cameras: Number(e.target.value) })}
                   className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#DDD6CD] rounded-lg text-xs font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-600/15 focus:border-amber-700/40 shadow-2xs"
                 >
-                  <option value="4_rear_1_front">4 Rear / 1 Front (Quad)</option>
-                  <option value="3_rear_1_front">3 Rear / 1 Front (Triple)</option>
-                  <option value="2_rear_1_front">2 Rear / 1 Front (Dual)</option>
-                  <option value="1_rear_1_front">1 Rear / 1 Front (Single)</option>
+                  <option value="1">1 Rear Lens</option>
+                  <option value="2">2 Rear Lenses (Dual)</option>
+                  <option value="3">3 Rear Lenses (Triple)</option>
+                  <option value="4">4 Rear Lenses (Quad)</option>
+                  <option value="5">5 Rear Lenses (Penta)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Front Selfie Count</label>
+                <select
+                  value={specs.num_front_cameras || 1}
+                  onChange={(e) => setSpecs({ ...specs, num_front_cameras: Number(e.target.value) })}
+                  className="w-full px-3 py-2 bg-[#FAF8F5] border border-[#DDD6CD] rounded-lg text-xs font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-600/15 focus:border-amber-700/40 shadow-2xs"
+                >
+                  <option value="1">1 Front Camera (Single)</option>
+                  <option value="2">2 Front Cameras (Dual)</option>
                 </select>
               </div>
             </div>
 
-            {/* Toggle checkboxes for 5G & NFC */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {/* Toggle checkboxes for 5G, NFC, and IR Blaster */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
               <label className="flex items-center justify-between p-3 rounded-lg border border-[#EAE4DC] bg-[#FAF8F5] hover:bg-white cursor-pointer transition-colors shadow-2xs">
-                <div className="flex items-center space-x-3">
-                  <div className="p-1.5 bg-blue-100 text-blue-800 rounded-md">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-1.5 bg-blue-100 text-blue-800 rounded-md shrink-0">
                     <Radio className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-slate-900">5G Sub-6 & mmWave</div>
-                    <div className="text-[10px] text-slate-500">NR Carrier Aggregation</div>
+                    <div className="text-xs font-bold text-slate-900">5G Sub-6/mmWave</div>
+                    <div className="text-[10px] text-slate-500">5G NR modem</div>
                   </div>
                 </div>
                 <input
@@ -543,19 +645,37 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
               </label>
 
               <label className="flex items-center justify-between p-3 rounded-lg border border-[#EAE4DC] bg-[#FAF8F5] hover:bg-white cursor-pointer transition-colors shadow-2xs">
-                <div className="flex items-center space-x-3">
-                  <div className="p-1.5 bg-amber-100 text-amber-800 rounded-md">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-1.5 bg-amber-100 text-amber-800 rounded-md shrink-0">
                     <Radio className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-slate-900">NFC Protocol Module</div>
-                    <div className="text-[10px] text-slate-500">Tap-to-pay & Fast Pair</div>
+                    <div className="text-xs font-bold text-slate-900">NFC Module</div>
+                    <div className="text-[10px] text-slate-500">Tap-to-pay chip</div>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={specs.has_nfc}
                   onChange={(e) => setSpecs({ ...specs, has_nfc: e.target.checked })}
+                  className="w-4 h-4 text-amber-700 rounded-sm border-[#DDD6CD] focus:ring-amber-600"
+                />
+              </label>
+
+              <label className="flex items-center justify-between p-3 rounded-lg border border-[#EAE4DC] bg-[#FAF8F5] hover:bg-white cursor-pointer transition-colors shadow-2xs">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-1.5 bg-purple-100 text-purple-800 rounded-md shrink-0">
+                    <Radio className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">IR Blaster</div>
+                    <div className="text-[10px] text-slate-500">Infrared remote</div>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={specs.has_ir_blaster}
+                  onChange={(e) => setSpecs({ ...specs, has_ir_blaster: e.target.checked })}
                   className="w-4 h-4 text-amber-700 rounded-sm border-[#DDD6CD] focus:ring-amber-600"
                 />
               </label>
@@ -700,16 +820,42 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ onCompareWithSpecs
                       <strong className="text-slate-900">{specs.internal_memory} GB</strong>
                     </div>
                     <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <span className="text-slate-400 block text-[10px]">Operating System:</span>
+                      <strong className="text-slate-900 capitalize">{specs.os === 'ios' ? 'Apple iOS' : specs.os === 'android' ? 'Android OS' : 'Other OS'}</strong>
+                    </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <span className="text-slate-400 block text-[10px]">Brand OEM:</span>
+                      <strong className="text-slate-900 capitalize">{specs.brand_name || 'Generic'}</strong>
+                    </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <span className="text-slate-400 block text-[10px]">Device Rating:</span>
+                      <strong className="text-slate-900">{specs.rating || 80}/100 ★</strong>
+                    </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <span className="text-slate-400 block text-[10px]">MicroSD Expansion:</span>
+                      <strong className="text-slate-900">{specs.extended_memory_available ? `Up to ${specs.extended_upto || 1024} GB` : 'None'}</strong>
+                    </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
                       <span className="text-slate-400 block text-[10px]">Accumulator:</span>
-                      <strong className="text-slate-900">{specs.battery_capacity} mAh</strong>
+                      <strong className="text-slate-900">{specs.battery_capacity} mAh ({specs.fast_charging}W)</strong>
                     </div>
                     <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
                       <span className="text-slate-400 block text-[10px]">Screen Panel:</span>
                       <strong className="text-slate-900">{specs.screen_size}" {specs.refresh_rate}Hz</strong>
                     </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <span className="text-slate-400 block text-[10px]">Cameras (Rear/Front):</span>
+                      <strong className="text-slate-900">{specs.num_rear_cameras}R ({specs.primary_camera_rear}MP) / {specs.num_front_cameras || 1}F</strong>
+                    </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <span className="text-slate-400 block text-[10px]">Sensors & Wireless:</span>
+                      <strong className="text-slate-900 font-mono text-[10px]">
+                        {specs.has_5g ? '5G' : '4G'} • {specs.has_nfc ? 'NFC' : 'No-NFC'} • {specs.has_ir_blaster ? 'IR' : 'No-IR'}
+                      </strong>
+                    </div>
                     <div className="col-span-2 p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-between">
                       <span className="text-slate-400 text-[10px]">Chipset & Speed:</span>
-                      <strong className="text-slate-900 font-mono text-[11px]">{selectedSoC.replace('_', ' ').toUpperCase()} ({specs.processor_speed} GHz)</strong>
+                      <strong className="text-slate-900 font-mono text-[11px]">{selectedSoC.replace('_', ' ').toUpperCase()} ({specs.processor_speed} GHz, {specs.num_cores} cores)</strong>
                     </div>
                   </div>
                 </div>

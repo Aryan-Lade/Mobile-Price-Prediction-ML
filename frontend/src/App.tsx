@@ -7,7 +7,7 @@ import { DashboardView } from './components/DashboardView';
 import { PredictorView } from './components/PredictorView';
 import { ModelBenchmarkingView } from './components/ModelBenchmarkingView';
 import { DatasetAnalyticsView } from './components/DatasetAnalyticsView';
-import { ExplainabilityView } from './components/ExplainabilityView';
+import { BottomNav } from './components/BottomNav';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -56,7 +56,7 @@ export function App() {
         />
 
         {/* Dynamic Workspace Views with Glitch-Free Persistent Mounting */}
-        <main className="flex-1 px-3 sm:px-6 py-4 sm:py-7 max-w-7xl w-full mx-auto">
+        <main className="flex-1 px-3 sm:px-6 py-4 sm:py-7 pb-24 lg:pb-8 max-w-7xl w-full mx-auto">
           <div className={activeTab === 'dashboard' ? 'tab-pane active' : 'tab-pane'}>
             <DashboardView onNavigate={(tab) => setActiveTab(tab)} />
           </div>
@@ -72,14 +72,10 @@ export function App() {
           <div className={activeTab === 'dataset' ? 'tab-pane active' : 'tab-pane'}>
             <DatasetAnalyticsView />
           </div>
-
-          <div className={activeTab === 'insights' ? 'tab-pane active' : 'tab-pane'}>
-            <ExplainabilityView />
-          </div>
         </main>
 
         {/* Clean Luxury Footer */}
-        <footer className="border-t border-[#E2D7C8] bg-[#FAF5ED] py-4 px-4 sm:px-6 mt-auto">
+        <footer className="border-t border-[#E2D7C8] bg-[#FAF5ED] py-4 px-4 sm:px-6 mb-16 lg:mb-0 mt-auto">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
             <div className="flex items-center space-x-2">
               <span className="font-bold text-slate-800 font-luxury">SmartPrice Intelligence Platform</span>
@@ -91,6 +87,9 @@ export function App() {
             </div>
           </div>
         </footer>
+
+        {/* Mobile Persistent 1-Thumb Bottom Navigation */}
+        <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
     </div>
   );

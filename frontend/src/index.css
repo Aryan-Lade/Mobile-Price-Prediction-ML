@@ -8,6 +8,12 @@
     --font-mono: 'JetBrains Mono', monospace;
   }
 
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
   body {
     font-family: var(--font-sans);
     background-color: #F4EEE6;
@@ -19,6 +25,8 @@
     color: #1E293B;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
     min-height: 100vh;
   }
 
@@ -88,10 +96,19 @@
   will-change: transform, box-shadow;
 }
 
-.luxury-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 28px -4px rgba(55, 40, 25, 0.09), 0 4px 10px -2px rgba(55, 40, 25, 0.05);
-  border-color: #CEBFAC;
+@media (hover: hover) and (pointer: fine) {
+  .luxury-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -4px rgba(55, 40, 25, 0.09), 0 4px 10px -2px rgba(55, 40, 25, 0.05);
+    border-color: #CEBFAC;
+  }
+}
+
+@media (hover: none) {
+  .luxury-card:active {
+    transform: scale(0.99);
+    transition: transform 0.1s ease;
+  }
 }
 
 /* Card Without Lift if Needed */
@@ -119,6 +136,13 @@
   border-color: #92400E;
   box-shadow: 0 0 0 3px rgba(146, 64, 14, 0.1);
   background-color: #FFFFFF;
+}
+
+/* Prevent unwanted iOS Safari viewport auto-zoom on input focus */
+@media (max-width: 640px) {
+  .form-input, .form-select, input, select, textarea {
+    font-size: 16px !important;
+  }
 }
 
 /* Luxury Pill Badges */

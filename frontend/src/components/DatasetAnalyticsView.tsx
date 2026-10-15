@@ -214,7 +214,7 @@ export const DatasetAnalyticsView: React.FC = () => {
           </div>
           <div>
             <div className="flex items-center justify-between mt-3 text-xs">
-              <span className="text-slate-500 text-[11px]">42 raw NaN resolved</span>
+              <span className="text-slate-500 text-[11px]">894 raw NaNs resolved (10 cols)</span>
               <span className="px-1.5 py-0.5 bg-[#FAF5ED] text-slate-700 border border-[#E2D7C8] rounded-md font-mono text-[10px]">Median & Mode</span>
             </div>
             <div className="mt-2 pt-2 border-t border-[#E2D7C8] text-[10px] font-mono text-slate-400 flex items-center justify-between">
@@ -269,57 +269,69 @@ export const DatasetAnalyticsView: React.FC = () => {
               <span className="text-amber-800 font-mono text-[10px]">Scikit-learn ColumnTransformer</span>
             </div>
 
+            {/* STAGE 0: RAW INGESTION */}
             <div className="p-4 bg-[#FAF5ED] rounded-xl border border-[#E2D7C8] space-y-2.5 text-xs text-slate-700">
               <div className="flex items-center justify-between font-bold text-slate-800 pb-2 border-b border-[#E2D7C8]">
                 <span className="flex items-center space-x-1.5">
                   <span className="text-rose-600 font-bold">⚡</span>
-                  <span className="font-luxury">STAGE 0: RAW INGESTION</span>
+                  <span className="font-luxury">STAGE 0: RAW INGESTION (Pre-Cleaning Baseline)</span>
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">CSV Source</span>
+                <span className="text-[10px] font-mono text-slate-400">980 Samples</span>
               </div>
-              <ul className="space-y-1.5 text-slate-600 pl-1">
-                <li className="flex items-start space-x-2">
-                  <span className="text-rose-600 font-bold">✕</span>
-                  <span><strong>42 Missing values:</strong> Battery (18), RAM (11), Refresh Rate (13)</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-rose-600 font-bold">✕</span>
-                  <span><strong>Unbounded Scales:</strong> Battery (2000–7000 mAh) vs Screen (5.4–6.9 in)</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-rose-600 font-bold">✕</span>
-                  <span><strong>High Cardinality:</strong> 74 unique processor string nomenclature</span>
-                </li>
-              </ul>
-              <div className="pt-2 text-[10px] font-mono text-rose-700 font-semibold border-t border-[#E2D7C8]">
-                Raw skewness: +1.42 on Price distribution
+              
+              <div className="text-slate-700 font-semibold text-[11px] mb-1">
+                Raw Missing Values Identified (894 Total across 10 Columns):
+              </div>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-slate-600 font-mono pl-1">
+                <div>• extended_upto: <strong className="text-rose-700">480</strong> (49.0%)</div>
+                <div>• fast_charging: <strong className="text-rose-700">211</strong> (21.5%)</div>
+                <div>• rating: <strong className="text-rose-700">101</strong> (10.3%)</div>
+                <div>• processor_speed: <strong className="text-rose-700">42</strong> (4.3%)</div>
+                <div>• processor_brand: <strong className="text-rose-700">20</strong> (2.0%)</div>
+                <div>• os: <strong className="text-rose-700">14</strong> (1.4%)</div>
+                <div>• battery_capacity: <strong className="text-rose-700">11</strong> (1.1%)</div>
+                <div>• num_cores: <strong className="text-rose-700">6</strong> (0.6%)</div>
+                <div>• primary_cam_front: <strong className="text-rose-700">5</strong> (0.5%)</div>
+                <div>• num_front_cameras: <strong className="text-rose-700">4</strong> (0.4%)</div>
+              </div>
+
+              <div className="pt-2 text-[10px] font-mono text-slate-500 border-t border-[#E2D7C8] flex items-center justify-between">
+                <span>Clean zero-NaN features: <strong>RAM, ROM, Screen, Refresh, Rear MP (0 missing)</strong></span>
+              </div>
+              <div className="text-[10px] font-mono text-rose-700 font-semibold">
+                Raw price skewness: +6.59 (Heavy positive tail up to ₹650,000)
               </div>
             </div>
 
+            {/* STAGE 3: FEATURE TENSOR */}
             <div className="p-4 bg-amber-50/40 rounded-xl border border-amber-200/80 space-y-2.5 text-xs text-slate-700">
               <div className="flex items-center justify-between font-bold text-amber-950 pb-2 border-b border-amber-200">
                 <span className="flex items-center space-x-1.5">
                   <span className="text-emerald-700 font-bold">✓</span>
-                  <span className="font-luxury">STAGE 3: FEATURE TENSOR</span>
+                  <span className="font-luxury">STAGE 3: POST-TRANSFORMATION TENSOR</span>
                 </span>
-                <span className="text-[10px] font-mono text-amber-800">Normalized</span>
+                <span className="text-[10px] font-mono text-amber-800">62 Transformed Dimensions</span>
               </div>
               <ul className="space-y-1.5 text-slate-700 pl-1">
                 <li className="flex items-start space-x-2">
                   <span className="text-emerald-700 font-bold">✓</span>
-                  <span><strong>Zero NaNs:</strong> Median segmented strictly on training splits</span>
+                  <span><strong>Zero NaNs Remaining:</strong> Median & Mode imputed strictly on training split (X_train)</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-emerald-700 font-bold">✓</span>
-                  <span><strong>Standard / Robust Scaled:</strong> Normalized bounds [μ=0, σ=1]</span>
+                  <span><strong>StandardScaler Applied:</strong> 28 numerical features standardized to [μ = 0, σ = 1]</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-emerald-700 font-bold">✓</span>
-                  <span><strong>Encoded Hierarchy:</strong> One-Hot OS & Chipset Tier Bins</span>
+                  <span><strong>One-Hot Encoded (34 Dummies):</strong> Brand (19), SoC Maker (12), Operating System (3)</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-emerald-700 font-bold">✓</span>
+                  <span><strong>8 Domain Features:</strong> PPI, Aspect Ratio, Pixel Count, Total Cameras, Battery Ratio, RAM/ROM, Performance Score</span>
                 </li>
               </ul>
               <div className="pt-2 text-[10px] font-mono text-emerald-800 font-semibold border-t border-amber-200">
-                Engineered skewness: +0.06 (Within Gaussian tolerance)
+                Feature space ready: 784 Train samples × 62 Features | 196 Test samples
               </div>
             </div>
           </div>
@@ -327,38 +339,62 @@ export const DatasetAnalyticsView: React.FC = () => {
           {/* Right: Transformation Tactics */}
           <div className="space-y-3">
             <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
-              <span>Transformation Tactics</span>
-              <span className="text-slate-500 font-mono text-[10px]">Deterministic</span>
+              <span>Imputation & Encoding Strategy</span>
+              <span className="text-slate-500 font-mono text-[10px]">Deterministic Pipeline</span>
             </div>
 
+            {/* Imputation Rule 1 */}
             <div className="p-3.5 bg-[#FAF5ED] rounded-xl border border-[#E2D7C8]">
               <div className="flex items-center justify-between mb-1">
-                <h4 className="text-xs font-bold font-luxury text-slate-900">Median Group Imputation</h4>
-                <span className="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-mono rounded-md font-semibold">Battery & RAM</span>
+                <h4 className="text-xs font-bold font-luxury text-slate-900">Numerical Median Imputation</h4>
+                <span className="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-mono rounded-md font-semibold">SimpleImputer(median)</span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Preserves robust variance without letting ultra-capacity (7,000 mAh) battery anomalies bias mid-tier distributions.
+                Robust against extreme skewness. Missing entries replaced by training fold medians:
               </p>
+              <div className="grid grid-cols-2 gap-1 text-[11px] font-mono text-slate-700 mt-2 bg-white/70 p-2 rounded-lg border border-[#EAE4DC]">
+                <div>• Rating (101 nulls) &rarr; <strong>80.0 / 100</strong></div>
+                <div>• Clock Speed (42 nulls) &rarr; <strong>2.4 GHz</strong></div>
+                <div>• Battery (11 nulls) &rarr; <strong>5,000 mAh</strong></div>
+                <div>• Fast Charging (211 nulls) &rarr; <strong>33.0 Watts</strong></div>
+                <div>• Front Optical (5 nulls) &rarr; <strong>16.0 MP</strong></div>
+                <div>• Expandable (480 nulls) &rarr; <strong>1,024 GB (1TB)</strong></div>
+              </div>
             </div>
 
+            {/* Imputation Rule 2 */}
             <div className="p-3.5 bg-[#FAF5ED] rounded-xl border border-[#E2D7C8]">
               <div className="flex items-center justify-between mb-1">
-                <h4 className="text-xs font-bold font-luxury text-slate-900">One-Hot Encoding (OHE)</h4>
-                <span className="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-mono rounded-md font-semibold">OS & SoC Maker</span>
+                <h4 className="text-xs font-bold font-luxury text-slate-900">Categorical Mode & Rare Grouping</h4>
+                <span className="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-mono rounded-md font-semibold">SimpleImputer(most_frequent)</span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Dummies created for Apple A-series, Qualcomm Snapdragon, MediaTek Dimensity, Google Tensor, and Exynos chips.
+                Discrete and categorical missing values resolved via statistical mode and frequency thresholding:
               </p>
+              <div className="grid grid-cols-1 gap-1 text-[11px] font-mono text-slate-700 mt-2 bg-white/70 p-2 rounded-lg border border-[#EAE4DC]">
+                <div>• CPU Cores (6 nulls) &rarr; Replaced with Mode: <strong>8 Cores (Octa-core)</strong></div>
+                <div>• Front Lenses (4 nulls) &rarr; Replaced with Mode: <strong>1.0 Front Sensor</strong></div>
+                <div>• OS (14 nulls) &rarr; Replaced with Mode: <strong>android</strong> & grouped to (android, ios, other_os)</div>
+                <div>• SoC Maker (20 nulls) &rarr; Grouped into: <strong>other_proc</strong></div>
+                <div>• Rare Brands (&lt;6 phones) &rarr; Grouped into: <strong>other_brand</strong> (Prevents high cardinality)</div>
+              </div>
             </div>
 
+            {/* Target Definition */}
             <div className="p-3.5 bg-[#FAF5ED] rounded-xl border border-[#E2D7C8]">
               <div className="flex items-center justify-between mb-1">
-                <h4 className="text-xs font-bold font-luxury text-slate-900">Target Equal-Frequency Binning</h4>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-mono rounded-md font-semibold">4 Balance Quotas</span>
+                <h4 className="text-xs font-bold font-luxury text-slate-900">Domain Price-Tier Stratification</h4>
+                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-mono rounded-md font-semibold">Fixed Market Thresholds</span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Categorizes price into 4 balanced quantiles avoiding class-imbalance penalties in Random Forest & KNN.
+                Classifies continuous MSRP prices into 4 realistic commercial smartphone market categories:
               </p>
+              <div className="grid grid-cols-2 gap-1 text-[11px] font-mono text-slate-700 mt-2 bg-white/70 p-2 rounded-lg border border-[#EAE4DC]">
+                <div>• Budget: <strong>&le; ₹15,000</strong> (337 phones, 34.4%)</div>
+                <div>• Mid-Range: <strong>₹15,001–₹30,000</strong> (349 phones, 35.6%)</div>
+                <div>• Premium: <strong>₹30,001–₹50,000</strong> (133 phones, 13.6%)</div>
+                <div>• Flagship: <strong>&gt; ₹50,000</strong> (161 phones, 16.4%)</div>
+              </div>
             </div>
           </div>
         </div>

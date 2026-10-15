@@ -10,6 +10,8 @@ An end-to-end Machine Learning system for predicting smartphone price categories
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.3-38B2AC.svg)](https://tailwindcss.com/)
 
 ---
+## Live Preview Link
+https://mobile-price-prediction-ml-sandy.vercel.app/
 
 ## 📌 Project Overview
 

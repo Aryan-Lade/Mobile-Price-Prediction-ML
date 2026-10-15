@@ -3,7 +3,6 @@ import {
   Smartphone,
   FlaskConical,
   Database,
-  BarChart3,
   Sparkles,
   X
 } from 'lucide-react';
@@ -28,7 +27,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'predict', label: 'Predict', icon: Smartphone },
     { id: 'model-lab', label: 'Model Lab', icon: FlaskConical },
     { id: 'dataset', label: 'Dataset', icon: Database },
-    { id: 'insights', label: 'Insights', icon: BarChart3 },
   ];
 
   const handleNavClick = (tabId: string) => {

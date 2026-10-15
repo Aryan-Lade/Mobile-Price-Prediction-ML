@@ -4,8 +4,7 @@ import {
   FileText,
   Download,
   Check,
-  CheckCircle2,
-  TrendingUp
+  CheckCircle2
 } from 'lucide-react';
 
 interface ModelBenchmarkingViewProps {
@@ -236,134 +235,81 @@ K-Nearest Neighbors & 85.2\\% & 84.0\\% & 85.0\\% & 0.849 & 0.918 \\\\
 
 
 
-      {/* Row: Cross-Model Performance Vectors & Architectural Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Cross-Model Vectors (7 Cols) */}
-        <div className="lg:col-span-7 luxury-card p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EAE4DC] gap-3">
-            <div>
-              <h3 className="text-base font-bold font-luxury text-slate-900">Cross-Model Performance Vectors</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Visualizing metric divergence across classifier families.</p>
-            </div>
-            <div className="flex items-center space-x-1 bg-[#FAF8F5] border border-[#EAE4DC] p-1 rounded-lg">
-              {(['all', 'accuracy', 'precision', 'recall', 'f1'] as const).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setMetricFilter(m)}
-                  className={`px-2.5 py-1 text-[11px] font-bold rounded-md capitalize transition-all ${
-                    metricFilter === m ? 'bg-white text-amber-900 shadow-2xs border border-[#EAE4DC]' : 'text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  {m === 'all' ? 'All Metrics' : m}
-                </button>
-              ))}
-            </div>
+      {/* Row: Cross-Model Performance Vectors */}
+      <div className="luxury-card p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EAE4DC] gap-3">
+          <div>
+            <h3 className="text-base font-bold font-luxury text-slate-900">Cross-Model Performance Vectors</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Visualizing metric divergence across classifier families.</p>
           </div>
-
-          {/* Grouped Bar Chart Visualizer */}
-          <div className="h-56 pt-6 pb-2 flex items-end justify-around px-4 border-b border-[#EAE4DC]">
-            {/* Logistic Regression */}
-            <div className="flex flex-col items-center space-y-2">
-              <div className="flex items-end space-x-1">
-                <div className="w-4 bg-slate-700 rounded-t-xs h-32" title="Accuracy: 88.4%"></div>
-                <div className="w-4 bg-blue-700 rounded-t-xs h-31" title="Precision: 87.9%"></div>
-                <div className="w-4 bg-blue-400 rounded-t-xs h-31" title="Recall: 88.2%"></div>
-                <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-31" title="F1: 0.880"></div>
-              </div>
-              <span className="text-xs font-semibold text-slate-700">Logistic Reg.</span>
-            </div>
-
-            {/* KNN */}
-            <div className="flex flex-col items-center space-y-2">
-              <div className="flex items-end space-x-1">
-                <div className="w-4 bg-slate-700 rounded-t-xs h-28" title="Accuracy: 85.2%"></div>
-                <div className="w-4 bg-blue-700 rounded-t-xs h-27" title="Precision: 84.0%"></div>
-                <div className="w-4 bg-blue-400 rounded-t-xs h-28" title="Recall: 85.0%"></div>
-                <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-27" title="F1: 0.849"></div>
-              </div>
-              <span className="text-xs font-semibold text-slate-700">KNN (k=9)</span>
-            </div>
-
-            {/* Random Forest */}
-            <div className="flex flex-col items-center space-y-2">
-              <span className="text-[10px] font-bold text-amber-800">94.8%</span>
-              <div className="flex items-end space-x-1">
-                <div className="w-4 bg-amber-700 rounded-t-xs h-40 shadow-xs" title="Accuracy: 94.8%"></div>
-                <div className="w-4 bg-blue-700 rounded-t-xs h-39" title="Precision: 94.5%"></div>
-                <div className="w-4 bg-blue-400 rounded-t-xs h-40" title="Recall: 94.8%"></div>
-                <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-39" title="F1: 0.945"></div>
-              </div>
-              <span className="text-xs font-bold text-amber-900 font-luxury">Random Forest ★</span>
-            </div>
-
-            {/* SVM */}
-            <div className="flex flex-col items-center space-y-2">
-              <div className="flex items-end space-x-1">
-                <div className="w-4 bg-slate-700 rounded-t-xs h-36" title="Accuracy: 91.3%"></div>
-                <div className="w-4 bg-blue-700 rounded-t-xs h-35" title="Precision: 91.0%"></div>
-                <div className="w-4 bg-blue-400 rounded-t-xs h-36" title="Recall: 91.2%"></div>
-                <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-35" title="F1: 0.911"></div>
-              </div>
-              <span className="text-xs font-semibold text-slate-700">SVM (RBF)</span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center space-x-6 pt-3 text-xs text-slate-600">
-            <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-amber-700 rounded-xs"></span><span>Top-1 Accuracy</span></div>
-            <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-blue-700 rounded-xs"></span><span>Macro Precision</span></div>
-            <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-blue-400 rounded-xs"></span><span>Macro Recall</span></div>
-            <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-[#D8CEC2] rounded-xs"></span><span>Macro F1-Score</span></div>
+          <div className="flex items-center space-x-1 bg-[#FAF8F5] border border-[#EAE4DC] p-1 rounded-lg">
+            {(['all', 'accuracy', 'precision', 'recall', 'f1'] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMetricFilter(m)}
+                className={`px-2.5 py-1 text-[11px] font-bold rounded-md capitalize transition-all ${
+                  metricFilter === m ? 'bg-white text-amber-900 shadow-2xs border border-[#EAE4DC]' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                {m === 'all' ? 'All Metrics' : m}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Right: Architectural Insights (5 Cols) */}
-        <div className="lg:col-span-5 luxury-card p-6 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center space-x-2 pb-3 border-b border-[#EAE4DC]">
-              <TrendingUp className="w-4 h-4 text-amber-800" />
-              <h3 className="text-base font-bold font-luxury text-slate-900">Architectural Insights</h3>
+        {/* Grouped Bar Chart Visualizer */}
+        <div className="h-56 pt-6 pb-2 flex items-end justify-around px-4 border-b border-[#EAE4DC]">
+          {/* Logistic Regression */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="flex items-end space-x-1">
+              <div className="w-4 bg-slate-700 rounded-t-xs h-32" title="Accuracy: 88.4%"></div>
+              <div className="w-4 bg-blue-700 rounded-t-xs h-31" title="Precision: 87.9%"></div>
+              <div className="w-4 bg-blue-400 rounded-t-xs h-31" title="Recall: 88.2%"></div>
+              <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-31" title="F1: 0.880"></div>
             </div>
-            <p className="text-xs text-slate-500 mt-1">
-              Empirical observations derived from cross-validation iterations on the 21 hardware features:
-            </p>
-
-            <div className="space-y-3 pt-3 text-xs text-slate-700">
-              <div className="p-3 bg-[#FAF8F5] rounded-lg border border-[#EAE4DC]">
-                <div className="font-bold text-slate-900 flex items-center space-x-1.5 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-700"></span>
-                  <span>Non-Linear Boundary Superiority</span>
-                </div>
-                <p className="text-slate-600 leading-relaxed">
-                  Random Forest outperforms Logistic Regression by +6.4% Accuracy, indicating strong non-linear interactions between RAM capacity and SoC benchmark score.
-                </p>
-              </div>
-
-              <div className="p-3 bg-[#FAF8F5] rounded-lg border border-[#EAE4DC]">
-                <div className="font-bold text-slate-900 flex items-center space-x-1.5 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                  <span>Feature Dimensionality Impact</span>
-                </div>
-                <p className="text-slate-600 leading-relaxed">
-                  KNN suffers from distance distortion in 21 dimensions despite standard scaling, yielding 85.2% accuracy due to sparse feature topology in Flagship tier.
-                </p>
-              </div>
-
-              <div className="p-3 bg-[#FAF8F5] rounded-lg border border-[#EAE4DC]">
-                <div className="font-bold text-slate-900 flex items-center space-x-1.5 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
-                  <span>Inference Efficiency Trade-off</span>
-                </div>
-                <p className="text-slate-600 leading-relaxed">
-                  KNN delivers lowest latency (1.8ms), but Random Forest at 18.4ms remains well within the &lt;50ms target for production real-time pricing queries.
-                </p>
-              </div>
-            </div>
+            <span className="text-xs font-semibold text-slate-700">Logistic Reg.</span>
           </div>
 
-          <div className="pt-3 mt-3 border-t border-[#EAE4DC] flex items-center justify-between text-[11px] text-slate-500">
-            <span>Validated on 20% holdout split</span>
-            <span className="font-mono font-semibold text-amber-800">k=5 Folds</span>
+          {/* KNN */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="flex items-end space-x-1">
+              <div className="w-4 bg-slate-700 rounded-t-xs h-28" title="Accuracy: 85.2%"></div>
+              <div className="w-4 bg-blue-700 rounded-t-xs h-27" title="Precision: 84.0%"></div>
+              <div className="w-4 bg-blue-400 rounded-t-xs h-28" title="Recall: 85.0%"></div>
+              <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-27" title="F1: 0.849"></div>
+            </div>
+            <span className="text-xs font-semibold text-slate-700">KNN (k=9)</span>
           </div>
+
+          {/* Random Forest */}
+          <div className="flex flex-col items-center space-y-2">
+            <span className="text-[10px] font-bold text-amber-800">94.8%</span>
+            <div className="flex items-end space-x-1">
+              <div className="w-4 bg-amber-700 rounded-t-xs h-40 shadow-xs" title="Accuracy: 94.8%"></div>
+              <div className="w-4 bg-blue-700 rounded-t-xs h-39" title="Precision: 94.5%"></div>
+              <div className="w-4 bg-blue-400 rounded-t-xs h-40" title="Recall: 94.8%"></div>
+              <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-39" title="F1: 0.945"></div>
+            </div>
+            <span className="text-xs font-bold text-amber-900 font-luxury">Random Forest ★</span>
+          </div>
+
+          {/* SVM */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="flex items-end space-x-1">
+              <div className="w-4 bg-slate-700 rounded-t-xs h-36" title="Accuracy: 91.3%"></div>
+              <div className="w-4 bg-blue-700 rounded-t-xs h-35" title="Precision: 91.0%"></div>
+              <div className="w-4 bg-blue-400 rounded-t-xs h-36" title="Recall: 91.2%"></div>
+              <div className="w-4 bg-[#D8CEC2] rounded-t-xs h-35" title="F1: 0.911"></div>
+            </div>
+            <span className="text-xs font-semibold text-slate-700">SVM (RBF)</span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center space-x-6 pt-3 text-xs text-slate-600">
+          <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-amber-700 rounded-xs"></span><span>Top-1 Accuracy</span></div>
+          <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-blue-700 rounded-xs"></span><span>Macro Precision</span></div>
+          <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-blue-400 rounded-xs"></span><span>Macro Recall</span></div>
+          <div className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 bg-[#D8CEC2] rounded-xs"></span><span>Macro F1-Score</span></div>
         </div>
       </div>
 

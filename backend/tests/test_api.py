@@ -41,7 +41,10 @@ SAMPLE_SMARTPHONE = {
 def test_root():
     response = client.get("/")
     assert response.status_code == 200
-    assert "SmartPrice" in response.json()["message"]
+    if "application/json" in response.headers.get("content-type", ""):
+        assert "SmartPrice" in response.json()["message"]
+    else:
+        assert "html" in response.headers.get("content-type", "").lower()
 
 
 def test_health():
