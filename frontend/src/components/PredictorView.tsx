@@ -4,7 +4,6 @@ import { predictPriceCategory, PRESET_SMARTPHONES } from '../api';
 import {
   Cpu,
   HardDrive,
-  BatteryCharging,
   Smartphone,
   Camera,
   Radio,
