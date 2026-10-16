@@ -4,6 +4,7 @@ import {
   FlaskConical,
   Database,
   Sparkles,
+  PanelLeftClose,
   X
 } from 'lucide-react';
 
@@ -13,6 +14,8 @@ interface SidebarProps {
   apiOnline: boolean | null;
   mobileMenuOpen?: boolean;
   onCloseMobileMenu?: () => void;
+  sidebarHidden?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -20,7 +23,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   apiOnline,
   mobileMenuOpen = false,
-  onCloseMobileMenu
+  onCloseMobileMenu,
+  sidebarHidden = false,
+  onToggleSidebar
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
@@ -40,9 +45,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <div className="flex flex-col justify-between h-full">
       <div>
         {/* Logo & Brand Header */}
-        <div className="p-5 border-b border-[#E2D7C8] flex items-center justify-between bg-white/70">
+        <div className="p-4 sm:p-5 border-b border-[#E2D7C8] flex items-center justify-between bg-white/70">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-900 via-amber-950 to-slate-900 flex items-center justify-center text-amber-200 shadow-sm font-bold text-lg border border-amber-600/30">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-900 via-amber-950 to-slate-900 flex items-center justify-center text-amber-200 shadow-sm font-bold text-lg border border-amber-600/30 shrink-0">
               <Sparkles className="w-5 h-5 text-amber-300" />
             </div>
             <div>
@@ -50,16 +55,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="text-[10px] font-semibold tracking-widest text-amber-800/80 uppercase">Price Intelligence</div>
             </div>
           </div>
-          {/* Mobile Close Button */}
-          {onCloseMobileMenu && (
-            <button
-              onClick={onCloseMobileMenu}
-              className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
-              aria-label="Close Mobile Navigation"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          )}
+          <div className="flex items-center space-x-1">
+            {/* Desktop Hide Sidebar Trigger */}
+            {onToggleSidebar && (
+              <button
+                onClick={onToggleSidebar}
+                className="hidden lg:flex p-1.5 rounded-lg text-slate-400 hover:text-amber-950 hover:bg-[#EFE7DC] active:scale-95 transition-all cursor-pointer"
+                title="Hide Sidebar (Ctrl+B)"
+                aria-label="Hide Sidebar"
+              >
+                <PanelLeftClose className="w-4.5 h-4.5" />
+              </button>
+            )}
+            {/* Mobile Close Button */}
+            {onCloseMobileMenu && (
+              <button
+                onClick={onCloseMobileMenu}
+                className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+                aria-label="Close Mobile Navigation"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Platform Navigation */}
@@ -109,9 +127,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      {/* Desktop Persistent Sidebar */}
-      <aside className="hidden lg:flex w-64 bg-[#FAF5ED] border-r border-[#E2D7C8] flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-30 shadow-[1px_0_12px_rgba(50,35,20,0.03)]">
-        {NavContent}
+      {/* Desktop Collapsible/Hideable Sidebar */}
+      <aside
+        className={`hidden lg:flex flex-col justify-between shrink-0 min-h-screen sticky top-0 h-screen z-30 transition-all duration-300 ease-in-out bg-[#FAF5ED] border-r border-[#E2D7C8] shadow-[1px_0_12px_rgba(50,35,20,0.03)] overflow-hidden ${
+          sidebarHidden ? 'w-0 min-w-0 border-r-0 opacity-0 pointer-events-none' : 'w-64 min-w-[16rem] opacity-100'
+        }`}
+      >
+        <div className="w-64 h-full flex flex-col justify-between">
+          {NavContent}
+        </div>
       </aside>
 
       {/* Mobile Slide-Over Drawer with Backdrop */}

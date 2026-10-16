@@ -15,6 +15,34 @@ export function App() {
   const [apiOnline, setApiOnline] = useState<boolean | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [sidebarHidden, setSidebarHidden] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('smartprice_sidebar_hidden') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleToggleSidebar = () => {
+    setSidebarHidden((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('smartprice_sidebar_hidden', String(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        handleToggleSidebar();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     async function checkHealth() {
@@ -37,22 +65,27 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#F4EEE6] text-slate-900 flex font-sans antialiased selection:bg-amber-800 selection:text-white">
-      {/* Sidebar: Persistent on Desktop, Slide-over on Mobile */}
+      {/* Sidebar: Collapsible/Hideable on Desktop, Slide-over on Mobile */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         apiOnline={apiOnline}
         mobileMenuOpen={mobileMenuOpen}
         onCloseMobileMenu={() => setMobileMenuOpen(false)}
+        sidebarHidden={sidebarHidden}
+        onToggleSidebar={handleToggleSidebar}
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header with Mobile Hamburger Trigger */}
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out">
+        {/* Top Header with Mobile Hamburger & Desktop Sidebar Toggle Trigger */}
         <Header
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           onOpenMobileMenu={() => setMobileMenuOpen(true)}
+          sidebarHidden={sidebarHidden}
+          onToggleSidebar={handleToggleSidebar}
+          activeTab={activeTab}
         />
 
         {/* Dynamic Workspace Views with Glitch-Free Persistent Mounting */}
